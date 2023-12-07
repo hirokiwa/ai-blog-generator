@@ -2,11 +2,15 @@ import OpenAI from "openai";
 
 const fetchOpenAi = async () => {
   try {
-    const openai = new OpenAI();
+    const apiKey = process.env["OPENAI_API_KEY"];
     const messageContent = process.env["OPENAI_MESSAGE_CONTENT"];
-    if (!messageContent) {
-      throw new Error("Open API Message Conttent is not found.");
+    if (!apiKey || !messageContent) {
+      throw new Error(!apiKey
+        ? "Open API Key is not found."
+        : "Open API Message Conttent is not found."
+      );
     }
+    const openai = new OpenAI({apiKey: apiKey});
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: messageContent }],
       model: "gpt-3.5-turbo",
