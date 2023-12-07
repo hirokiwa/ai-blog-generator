@@ -24,9 +24,6 @@ const fetchOpenAi = async () => {
 
 export const parseGeneratedBlog = (completion: OpenAI.Chat.Completions.ChatCompletion) => {
   try {
-    console.log(completion)
-    console.log("\n✨Raw Data from AI ==================\n");
-    console.log(completion.choices[0]);
     const rawContent = completion.choices[0]?.message?.content;
     const newlinesErased = rawContent && rawContent.replace(/\r?\n/g, "");
     const parsedJson = newlinesErased && JSON.parse(newlinesErased);
@@ -39,11 +36,6 @@ export const parseGeneratedBlog = (completion: OpenAI.Chat.Completions.ChatCompl
       body: blogBody as string,
     } as generatedPart : undefined;
     
-    console.log("\n✨Parsed Blog Data ==================\n");
-    console.log(parsedBlog);
-    console.log("\n✨Body as String ==================\n");
-    console.log(parsedBlog?.body);
-    console.log("\n==================\n");
     return parsedBlog;
   } catch (e) {
     console.error(e, "Faild to parse data.");
