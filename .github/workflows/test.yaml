@@ -1,0 +1,43 @@
+name: Run tests and rollback on failure
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm run test
+
+  rollback:
+    needs: test
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create Rollback PR
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "rollback"
+        destination_branch: "main"
+        pr_title: "Rollback due to failed tests"
+        pr_body: "This PR is automatically created by GitHub Actions. It reverts the changes made in the last commit due to failing tests."
+        github_token: ${{ secrets.GITHUB_TOKEN }}
