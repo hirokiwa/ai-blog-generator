@@ -50,7 +50,7 @@ const main = async () => {
   console.log(hello("AI Blog"));
   const newBlog = await generateBlog();
   newBlog && addBlog(newBlog)
-    .then((docId) => console.log(`The blog is stored with ID ${docId}.`))
+    .then((_) => console.log(`Success to store with ID ****.`))
     .catch((error) => console.error('Faild to store the blog:', error))
 }
 
