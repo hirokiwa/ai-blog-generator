@@ -33,12 +33,7 @@ const getAllBlogs = async () => {
 const addBlog = async (newBlog: blogData): Promise<string> => {
   try {
     const blogCollection = initializeBlogCollection();
-    const docRef = await addDoc(blogCollection, {
-      ...newBlog,
-      createdAt: dateToTimeStamp(newBlog.createdAt),
-      publishedAt: dateToTimeStamp(newBlog.publishedAt),
-    });
-
+    const docRef = await addDoc(blogCollection, newBlog);
     return docRef.id;
   } catch (error) {
     console.error('Faild to add blig:', error);
