@@ -7,7 +7,7 @@ import { generateBlog } from "./generate";
 dotenv.config();
 
 export const hello = (name: string): string => {
-  return `Thank ${name}!`
+  return `Hello ${name}!`
 }
 
 const getAllBlogs = async () => {
