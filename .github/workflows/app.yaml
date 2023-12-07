@@ -4,6 +4,13 @@ on:
   push:
   schedule:
     - cron: '0 3 * * *' # 12:00 at Japan (UTC 3:00)
+  
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    OPENAI_MESSAGE_CONTENT: ${{ secrets.OPENAI_MESSAGE_CONTENT }}
+    FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+    FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+    FIREBASE_BLOG_COLLECTION: ${{ secrets.FIREBASE_BLOG_COLLECTION }}
 
 jobs:
   run-typescript:
