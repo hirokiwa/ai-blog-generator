@@ -58,12 +58,13 @@ const getGeneratedPart = async (): Promise<generatedPart|undefined> => {
 
 export const generateBlog = async (): Promise<blogData|undefined> => {
   const parsedNewBlog = await repetition(3, getGeneratedPart);
+  const TIME_DIFFERENCE = 9;
 
   const now = new Date();
   return parsedNewBlog ? {
     ...parsedNewBlog,
     createdAt: now,
-    publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 0, 0, 0),
+    publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19 - TIME_DIFFERENCE, 0, 0, 0),
     publiclyAvailable: true,
   } : undefined;
 }
