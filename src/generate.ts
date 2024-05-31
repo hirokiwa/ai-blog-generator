@@ -13,7 +13,7 @@ const fetchOpenAi = async () => {
     const openai = new OpenAI({apiKey: apiKey});
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: messageContent }],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
     });
     return completion;
   } catch (e) {
@@ -25,11 +25,12 @@ const fetchOpenAi = async () => {
 export const parseGeneratedBlog = (completion: OpenAI.Chat.Completions.ChatCompletion) => {
   try {
     const rawContent = completion.choices[0]?.message?.content;
-    const newlinesErased = rawContent && rawContent.replace(/\r?\n/g, "");
-    const parsedJson = newlinesErased && JSON.parse(newlinesErased);
+    const newlinesErased = rawContent?.replace(/\r?\n/g, "");
+    const codeBlockRemoved = newlinesErased?.replace(/^```json/, '').replace(/```$/, '') ?? "";
+    const parsedJson = newlinesErased && JSON.parse(codeBlockRemoved);
 
-    const blogTitle = parsedJson && parsedJson.title;
-    const blogBody = parsedJson && parsedJson.body.replace(/\r?\n/g, "").replace(" ", '').replace("　", '');
+    const blogTitle = parsedJson?.title;
+    const blogBody = parsedJson?.body.replace(/\r?\n/g, "").replace(" ", '').replace("　", '');
     
     const parsedBlog = blogTitle && blogBody ? {
       title: blogTitle as string,
