@@ -26,7 +26,8 @@ export const parseGeneratedBlog = (completion: OpenAI.Chat.Completions.ChatCompl
   try {
     const rawContent = completion.choices[0]?.message?.content;
     const newlinesErased = rawContent && rawContent.replace(/\r?\n/g, "");
-    const parsedJson = newlinesErased && JSON.parse(newlinesErased);
+    const codeBlockRemoved = newlinesErased?.replace(/^```json/, '').replace(/```$/, '') ?? "";
+    const parsedJson = newlinesErased && JSON.parse(codeBlockRemoved);
 
     const blogTitle = parsedJson && parsedJson.title;
     const blogBody = parsedJson && parsedJson.body.replace(/\r?\n/g, "").replace(" ", '').replace("　", '');
