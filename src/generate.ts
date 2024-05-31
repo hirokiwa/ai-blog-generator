@@ -13,7 +13,7 @@ const fetchOpenAi = async () => {
     const openai = new OpenAI({apiKey: apiKey});
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: messageContent }],
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
     });
     return completion;
   } catch (e) {
