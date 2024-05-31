@@ -25,12 +25,12 @@ const fetchOpenAi = async () => {
 export const parseGeneratedBlog = (completion: OpenAI.Chat.Completions.ChatCompletion) => {
   try {
     const rawContent = completion.choices[0]?.message?.content;
-    const newlinesErased = rawContent && rawContent.replace(/\r?\n/g, "");
+    const newlinesErased = rawContent?.replace(/\r?\n/g, "");
     const codeBlockRemoved = newlinesErased?.replace(/^```json/, '').replace(/```$/, '') ?? "";
     const parsedJson = newlinesErased && JSON.parse(codeBlockRemoved);
 
-    const blogTitle = parsedJson && parsedJson.title;
-    const blogBody = parsedJson && parsedJson.body.replace(/\r?\n/g, "").replace(" ", '').replace("　", '');
+    const blogTitle = parsedJson?.title;
+    const blogBody = parsedJson?.body.replace(/\r?\n/g, "").replace(" ", '').replace("　", '');
     
     const parsedBlog = blogTitle && blogBody ? {
       title: blogTitle as string,
