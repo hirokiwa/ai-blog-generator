@@ -1,3 +1,4 @@
+import { postToTwitter } from "./twitter";
 import { getDocs, limit, orderBy, query, where } from "firebase/firestore"
 import * as dotenv from 'dotenv';
 import { initializeBlogCollection } from "./firebase";
@@ -37,6 +38,7 @@ const createTweetText = (sourceBlog: blog) =>
 const announcement = async () => {
   const sourceBlog = await getBlogOfTheDay();
   const tweetText = sourceBlog && createTweetText(sourceBlog);
+  tweetText && postToTwitter(tweetText);
 };
 
 announcement();
