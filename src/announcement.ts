@@ -31,8 +31,12 @@ const getBlogOfTheDay = async () => {
   }
 };
 
+const createTweetText = (sourceBlog: blog) =>
+  `／\n新着記事🎉\n『${sourceBlog.title}』\n＼\n\n${sourceBlog.body.substring(0, 60)}...\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${sourceBlog.id}`;
+
 const announcement = async () => {
   const sourceBlog = await getBlogOfTheDay();
+  const tweetText = sourceBlog && createTweetText(sourceBlog);
 };
 
 announcement();
