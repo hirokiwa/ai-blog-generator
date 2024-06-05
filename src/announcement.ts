@@ -24,7 +24,6 @@ const getBlogOfTheDay = async () => {
       publiclyAvailable: b.publiclyAvailable,
     }));
     const blog = formatedData[0];
-    console.log(blog && isWithinLast24Hours(blog.publishedAt) ? blog : undefined)
     return blog && isWithinLast24Hours(blog.publishedAt) ? blog : undefined;
   } catch (e) {
     console.error("Faild to get all blogs.", e);
