@@ -31,8 +31,20 @@ const getBlogOfTheDay = async () => {
   }
 };
 
-const createTweetText = (sourceBlog: blog) =>
-  `／\n新着記事🎉\n『${sourceBlog.title}』\n＼\n\n${sourceBlog.body.substring(0, 60)}...\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${sourceBlog.id}`;
+const getAdjustedBodyLength = (
+    title: string,
+    titleLimit = 28,
+    defaultBodyLength = 60
+) => {
+  const excessTitleLength = Math.max(0, title.length - titleLimit);
+  const adjustedBodyLength = Math.max(0, defaultBodyLength - excessTitleLength);
+  return adjustedBodyLength;
+};
+
+const createTweetText = (sourceBlog: blog) => {
+    const adjustedBodyLength = getAdjustedBodyLength(sourceBlog.title);
+    return `／\n新着記事🎉\n『${sourceBlog.title}』\n＼\n\n${sourceBlog.body.substring(0, adjustedBodyLength)}...\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${sourceBlog.id}`;
+};
 
 const announcement = async () => {
   const sourceBlog = await getBlogOfTheDay();
