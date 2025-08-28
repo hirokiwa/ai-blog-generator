@@ -3,8 +3,12 @@ import { getDocs, limit, orderBy, query, where } from "firebase/firestore"
 import * as dotenv from 'dotenv';
 import { initializeBlogCollection } from "./firebase";
 import { isWithinLast24Hours, timeStampToDate } from "./utils";
+import { getTweetLength } from "twitter-text";
 
 dotenv.config();
+
+const DEFAULT_BODY_LENGTH = 60;
+const TWEET_BYTE_LENGTH_LIMIT = 280;
 
 const getBlogOfTheDay = async () => {
   try {
@@ -31,24 +35,37 @@ const getBlogOfTheDay = async () => {
   }
 };
 
-const getAdjustedBodyLength = (
-    title: string,
-    titleLimit = 28,
-    defaultBodyLength = 60
-) => {
-  const excessTitleLength = Math.max(0, title.length - titleLimit);
-  const adjustedBodyLength = Math.max(0, defaultBodyLength - excessTitleLength);
-  return adjustedBodyLength;
+const buildTweetText = ({ title, body, id }: { title: string; body: string; id: string }) => {
+    return `／\n新着記事🎉\n『${title}』\n＼\n\n${body}…\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${id}`;
 };
 
-const createTweetText = (sourceBlog: blog) => {
-    const adjustedBodyLength = getAdjustedBodyLength(sourceBlog.title);
-    return `／\n新着記事🎉\n『${sourceBlog.title}』\n＼\n\n${sourceBlog.body.substring(0, adjustedBodyLength)}...\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${sourceBlog.id}`;
+const createTweetText = ({ title, body, id }: { title: string; body: string; id: string }) => {
+  const tweetWithoutBody = buildTweetText({
+    title,
+    body: "",
+    id,
+  });
+
+  const tweetByteLengthWithoutBody = getTweetLength(tweetWithoutBody);
+  const remainingByteLength = TWEET_BYTE_LENGTH_LIMIT - tweetByteLengthWithoutBody;
+  const availableBodyLength = Math.floor((remainingByteLength) / 2); // 2 characters per Japanese character
+
+  const bodyToInsert = body.substring(0, Math.min(DEFAULT_BODY_LENGTH, availableBodyLength));
+
+  return buildTweetText({
+    title,
+    body: bodyToInsert,
+    id,
+  });
 };
 
 const announcement = async () => {
   const sourceBlog = await getBlogOfTheDay();
-  const tweetText = sourceBlog && createTweetText(sourceBlog);
+  const tweetText = sourceBlog && createTweetText({
+        title: sourceBlog.title,
+        body: sourceBlog.body,
+        id: sourceBlog.id,
+  });
   tweetText && postToTwitter(tweetText);
 };
 

@@ -31,6 +31,7 @@
   "homepage": "https://github.com/rara-tan/ts-template#readme",
   "devDependencies": {
     "@types/jest": "^29.5.0",
+    "@types/twitter-text": "^3.1.10",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
@@ -47,6 +48,7 @@
     "dotenv": "^16.3.1",
     "firebase": "^10.6.0",
     "openai": "^4.20.1",
-    "twitter-api-v2": "^1.17.1"
+    "twitter-api-v2": "^1.17.1",
+    "twitter-text": "^3.1.0"
   }
 }
