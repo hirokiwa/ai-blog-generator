@@ -36,7 +36,7 @@ const getBlogOfTheDay = async () => {
 };
 
 const buildTweetText = ({ title, body, id }: { title: string; body: string; id: string }) => {
-    return `／\n新着記事🎉\n『${title}』\n＼\n\n${body}…\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${id}`;
+    return `／\n新着記事🎉\n『${title}』\n＼\n\n${body}…\n\n#関西弁でお届けするAIおじさん毎日ブログ\n\n続きを読む👇👇\nhttps://ai-blog.hirokiwa.com/post/${id}?utm_source=official_x&utm_medium=social&utm_campaign=new_post`;
 };
 
 const createTweetText = ({ title, body, id }: { title: string; body: string; id: string }) => {
