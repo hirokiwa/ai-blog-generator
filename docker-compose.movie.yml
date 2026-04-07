@@ -1,0 +1,41 @@
+services:
+  voicevox:
+    image: ${VOICEVOX_ENGINE_IMAGE:-voicevox/voicevox_engine}
+    ports:
+      - "50021:50021"
+
+  movie-studio:
+    build:
+      context: .
+      dockerfile: docker/movie-studio/Dockerfile
+    working_dir: /workspace
+    environment:
+      FIREBASE_API_KEY: ${FIREBASE_API_KEY}
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_BLOG_COLLECTION: ${FIREBASE_BLOG_COLLECTION}
+      VOICEVOX_ENGINE_URL: http://voicevox:50021
+      VOICEVOX_SPEAKER_ID: ${VOICEVOX_SPEAKER_ID:-13}
+      VOICEVOX_CONCURRENCY: ${VOICEVOX_CONCURRENCY:-2}
+    volumes:
+      - ./:/workspace
+      - movie_studio_node_modules:/workspace/node_modules
+    depends_on:
+      - voicevox
+
+  youtube-publisher:
+    build:
+      context: .
+      dockerfile: docker/youtube-publisher/Dockerfile
+    working_dir: /workspace
+    environment:
+      YOUTUBE_CLIENT_ID: ${YOUTUBE_CLIENT_ID}
+      YOUTUBE_CLIENT_SECRET: ${YOUTUBE_CLIENT_SECRET}
+      YOUTUBE_REDIRECT_URI: ${YOUTUBE_REDIRECT_URI}
+      YOUTUBE_REFRESH_TOKEN: ${YOUTUBE_REFRESH_TOKEN}
+    volumes:
+      - ./:/workspace
+      - youtube_publisher_node_modules:/workspace/node_modules
+
+volumes:
+  movie_studio_node_modules:
+  youtube_publisher_node_modules:

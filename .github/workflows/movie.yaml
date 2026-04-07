@@ -1,0 +1,56 @@
+name: Movie Studio Workflow
+
+on:
+  schedule:
+    - cron: "15 3 * * *"
+  workflow_dispatch:
+
+jobs:
+  movie-studio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Render Long And Short Movies
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_BLOG_COLLECTION: ${{ secrets.FIREBASE_BLOG_COLLECTION }}
+          VOICEVOX_SPEAKER_ID: ${{ secrets.VOICEVOX_SPEAKER_ID }}
+          VOICEVOX_CONCURRENCY: 2
+        run: ./scripts/render-movies-in-container.sh long,short
+
+      - name: Discover Rendered Bundle
+        id: rendered_bundle
+        run: echo "path=$(find artifacts/movie-studio -name rendered-bundle.json | sort | tail -n 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Rendered Movies
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REDIRECT_URI: ${{ secrets.YOUTUBE_REDIRECT_URI }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: ./scripts/publish-movies-in-container.sh "${{ steps.rendered_bundle.outputs.path }}"
+
+      - name: Upload Movie Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: movie-studio-artifacts
+          path: artifacts/movie-studio
+
+      - name: Notify Admin
+        if: failure() && secrets.ADMIN_NOTIFICATION_WEBHOOK_URL != ''
+        env:
+          ADMIN_NOTIFICATION_WEBHOOK_URL: ${{ secrets.ADMIN_NOTIFICATION_WEBHOOK_URL }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d "{\"text\":\"Movie Studio Workflow failed: ${GITHUB_RUN_URL}\"}" \
+            "${ADMIN_NOTIFICATION_WEBHOOK_URL}"

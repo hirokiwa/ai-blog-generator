@@ -7,6 +7,9 @@
     "build": "tsc",
     "dev": "tsc && node ./dist/main.js",
     "post": "tsc && node ./dist/announcement.js",
+    "movie:render": "tsc && node ./dist/movie-studio/cli/render-movies.js",
+    "movie:publish": "tsc && node ./dist/movie-studio/cli/publish-movies.js",
+    "movie:workflow": "tsc && node ./dist/movie-studio/cli/movie-workflow.js",
     "lint": "eslint src/**/*.ts",
     "lint-fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
@@ -31,6 +34,7 @@
   "homepage": "https://github.com/rara-tan/ts-template#readme",
   "devDependencies": {
     "@types/jest": "^29.5.0",
+    "@types/node": "^18.19.76",
     "@types/twitter-text": "^3.1.10",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "eslint": "^8.37.0",
@@ -47,6 +51,7 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "firebase": "^10.6.0",
+    "googleapis": "^157.0.0",
     "openai": "^4.20.1",
     "twitter-api-v2": "^1.17.1",
     "twitter-text": "^3.1.0"
