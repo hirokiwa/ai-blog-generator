@@ -30,8 +30,10 @@ export const parseCliOptions = (): {
   movieKinds: MovieKind[];
   artifactDirectoryPath?: string;
   renderedBundleFilePath?: string;
+  mockBlogFilePath?: string;
 } => {
   const parsedArguments = parseArgs({
+    allowPositionals: true,
     options: {
       kinds: {
         type: "string",
@@ -42,12 +44,27 @@ export const parseCliOptions = (): {
       renderedBundle: {
         type: "string",
       },
+      mockBlog: {
+        type: "string",
+      },
     },
   });
 
+  const positionalMovieKinds = parsedArguments.positionals;
+  const movieKindsOption = parsedArguments.values.kinds;
+
+  if (movieKindsOption !== undefined && positionalMovieKinds.length > 0) {
+    throw new MovieStudioError("Use either --kinds or positional movie kinds, not both.");
+  }
+
+  const resolvedMovieKindsOption = movieKindsOption ?? (
+    positionalMovieKinds.length > 0 ? positionalMovieKinds.join(",") : undefined
+  );
+
   return {
-    movieKinds: parseMovieKinds(parsedArguments.values.kinds),
+    movieKinds: parseMovieKinds(resolvedMovieKindsOption),
     artifactDirectoryPath: parsedArguments.values.artifactDirectory,
     renderedBundleFilePath: parsedArguments.values.renderedBundle,
+    mockBlogFilePath: parsedArguments.values.mockBlog,
   };
 };

@@ -14,6 +14,9 @@
 長尺だけ:
 `./scripts/render-movies-in-container.sh long`
 
+mock blog を使う場合:
+`./scripts/render-movies-in-container.sh --mockBlog mock-blog.json`
+
 生成結果:
 `artifacts/movie-studio/<YYYYMMDD>-<postId>/`
 

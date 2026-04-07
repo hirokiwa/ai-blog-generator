@@ -1,7 +1,7 @@
 import { rm } from "fs/promises";
 import { join } from "path";
 import { synthesizeScriptAudio } from "../audio/synthesize-script-audio";
-import { fetchLatestBlogPublishedToday } from "../blog/blog-source";
+import { resolveMovieStudioBlogSource } from "../blog/blog-source";
 import {
   defaultBlogTimeZone,
   defaultVoicevoxSpeaker,
@@ -221,15 +221,21 @@ const buildRenderedMovieArtifacts = async ({
 export const renderMovieBundle = async ({
   selectedMovieKinds,
   artifactDirectoryPath,
+  mockBlogFilePath,
   timeZone = defaultBlogTimeZone,
 }: {
   selectedMovieKinds: MovieKind[];
   artifactDirectoryPath?: string;
+  mockBlogFilePath?: string;
   timeZone?: string;
 }): Promise<RenderedMovieBundle> => {
   const currentDate = new Date();
   console.log(`[movie-studio] fetch latest blog currentDate=${currentDate.toISOString()} timeZone=${timeZone}`);
-  const blog = await fetchLatestBlogPublishedToday(currentDate, timeZone);
+  const blog = await resolveMovieStudioBlogSource({
+    currentDate,
+    timeZone,
+    mockBlogFilePath,
+  });
   console.log(`[movie-studio] fetched blog id=${blog.id} publishedAt=${blog.publishedAt}`);
 
   const narrationSentences = buildNarrationSentences(blog);

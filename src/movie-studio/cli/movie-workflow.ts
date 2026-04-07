@@ -7,10 +7,11 @@ import { parseCliOptions } from "./options";
 dotenv.config();
 
 const main = async (): Promise<void> => {
-  const { movieKinds, artifactDirectoryPath } = parseCliOptions();
+  const { movieKinds, artifactDirectoryPath, mockBlogFilePath } = parseCliOptions();
   const renderedMovieBundle = await renderMovieBundle({
     selectedMovieKinds: movieKinds,
     artifactDirectoryPath,
+    mockBlogFilePath,
   });
 
   if (process.env["MOVIE_STUDIO_SKIP_YOUTUBE_UPLOAD"] === "true") {
