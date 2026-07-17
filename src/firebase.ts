@@ -3,9 +3,17 @@ import { Firestore, collection, getFirestore } from "firebase/firestore";
 
 const initializeDb = () => {
   try {
+    const apiKey = process.env["FIREBASE_API_KEY"];
+    const projectId = process.env["FIREBASE_PROJECT_ID"];
+    if (!apiKey || !projectId) {
+      throw new Error(!apiKey
+        ? "Firebase API Key is not found."
+        : "Firebase Project ID is not found."
+      );
+    }
     const firebaseConfig = {
-      apiKey: process.env["FIREBASE_API_KEY"],
-      projectId: process.env["FIREBASE_PROJECT_ID"],
+      apiKey: apiKey,
+      projectId: projectId,
     };
     
     const app = initializeApp(firebaseConfig);
@@ -14,7 +22,7 @@ const initializeDb = () => {
     return db;
   } catch (e) {
     console.error("Faild to initialize app", e);
-    return undefined;
+    throw e;
   }
 }
 
