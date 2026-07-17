@@ -28,6 +28,11 @@ const buildLongVideoScript = (
   return {
     kind: "long",
     dimensions: { width: 1920, height: 1080 },
+    imageLayout: {
+      scaleWidth: 1440,
+      offsetX: 0,
+      offsetY: 0,
+    },
     captionLayout: {
       fontSize: 52,
       maxCharactersPerLine: 24,
@@ -37,7 +42,6 @@ const buildLongVideoScript = (
     },
     headerText,
     headerFontSize: 36,
-    imageScaleWidth: 360,
     segments: [
       ...narrationSentences.map(mapNarrationSentenceToSegment),
       {
@@ -56,6 +60,11 @@ const buildShortVideoScript = (
   return {
     kind: "short",
     dimensions: { width: 1080, height: 1920 },
+    imageLayout: {
+      scaleWidth: 920,
+      offsetX: 0,
+      offsetY: -80,
+    },
     captionLayout: {
       fontSize: 56,
       maxCharactersPerLine: 14,
@@ -65,7 +74,6 @@ const buildShortVideoScript = (
     },
     headerText,
     headerFontSize: 34,
-    imageScaleWidth: 460,
     segments: [
       ...narrationSentences.map(mapNarrationSentenceToSegment),
       {

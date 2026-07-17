@@ -20,6 +20,11 @@ export interface VideoScript {
     width: number;
     height: number;
   };
+  imageLayout: {
+    scaleWidth: number;
+    offsetX: number;
+    offsetY: number;
+  };
   captionLayout: {
     fontSize: number;
     maxCharactersPerLine: number;
@@ -29,7 +34,6 @@ export interface VideoScript {
   };
   headerText: string;
   headerFontSize: number;
-  imageScaleWidth: number;
   segments: VideoScriptSegment[];
 }
 

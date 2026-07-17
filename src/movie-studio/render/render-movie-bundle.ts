@@ -8,9 +8,9 @@ import {
   movieArtifactRootDirectoryName,
 } from "../shared/constants";
 import { getDayKeyInTimeZone, getIsoStringWithoutMilliseconds } from "../shared/date";
-import { downloadMovieStudioAssets } from "../shared/download-assets";
 import { MovieStudioError } from "../shared/errors";
 import { ensureDirectory, joinArtifactPath, writeJsonFile } from "../shared/file-system";
+import { prepareMovieStudioAssets } from "../shared/movie-studio-assets";
 import type { RenderedMovieArtifact, RenderedMovieBundle, MovieKind } from "../shared/types";
 import { buildVideoScripts } from "../script/build-video-scripts";
 import { buildNarrationSentences, getShortNarrationSentences } from "../script/text";
@@ -129,7 +129,7 @@ const buildRenderedMovieArtifacts = async ({
   scripts: ReturnType<typeof buildVideoScripts>["scripts"];
   audioManifest: Awaited<ReturnType<typeof synthesizeScriptAudio>>;
   artifactDirectoryPath: string;
-  assets: Awaited<ReturnType<typeof downloadMovieStudioAssets>>;
+  assets: Awaited<ReturnType<typeof prepareMovieStudioAssets>>;
   blogTitle: string;
   dayKey: string;
   headerText: string;
@@ -262,7 +262,7 @@ export const renderMovieBundle = async ({
   await ensureDirectory(joinArtifactPath(resolvedArtifactDirectoryPath, "captions"));
 
   console.log(`[movie-studio] download assets directory=${joinArtifactPath(resolvedArtifactDirectoryPath, "assets")}`);
-  const assets = await downloadMovieStudioAssets(joinArtifactPath(resolvedArtifactDirectoryPath, "assets"));
+  const assets = await prepareMovieStudioAssets(joinArtifactPath(resolvedArtifactDirectoryPath, "assets"));
 
   const speakerId = Number(process.env["VOICEVOX_SPEAKER_ID"] ?? String(defaultVoicevoxSpeaker));
   console.log(`[movie-studio] synthesize audio speaker=${String(speakerId)} concurrency=${process.env["VOICEVOX_CONCURRENCY"] ?? "2"}`);

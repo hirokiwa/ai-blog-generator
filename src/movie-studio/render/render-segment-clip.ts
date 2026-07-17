@@ -32,6 +32,14 @@ const buildCaptionYExpression = (script: VideoScript): string => {
   return `h-text_h-${String(script.captionLayout.bottomMargin)}`;
 };
 
+const buildOjisanOverlayXExpression = (script: VideoScript): string => {
+  return `(W-w)/2${script.imageLayout.offsetX >= 0 ? "+" : ""}${String(script.imageLayout.offsetX)}`;
+};
+
+const buildOjisanOverlayYExpression = (script: VideoScript): string => {
+  return `(H-h)/2${script.imageLayout.offsetY >= 0 ? "+" : ""}${String(script.imageLayout.offsetY)}`;
+};
+
 const createHeaderDrawtextFilter = (
   script: VideoScript,
   headerTextFilePath: string,
@@ -55,8 +63,8 @@ const buildMovieFilterComplex = (
 ): string => {
   const filterSteps = [
     `[0:v]scale=${String(script.dimensions.width)}:${String(script.dimensions.height)}[bg]`,
-    `[1:v]scale=${String(script.imageScaleWidth)}:-1[ojisan]`,
-    `[bg][ojisan]overlay=(W-w)/2:(H-h)/2-80[base]`,
+    `[1:v]scale=${String(script.imageLayout.scaleWidth)}:-1[ojisan]`,
+    `[bg][ojisan]overlay=${buildOjisanOverlayXExpression(script)}:${buildOjisanOverlayYExpression(script)}[base]`,
     `[base]${createHeaderDrawtextFilter(script, headerTextFilePath)}[caption_0]`,
   ];
 
