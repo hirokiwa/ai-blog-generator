@@ -13,5 +13,6 @@ export const postToTwitter = async (message: string) => {
     console.log('Tweet successfully posted!');
   } catch (error) {
     console.error('Error posting tweet:', error);
+    throw error;
   };
 };

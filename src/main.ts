@@ -50,9 +50,13 @@ const addBlog = async (newBlog: blogData): Promise<string> => {
 const main = async () => {
   console.log(hello("AI Blog"));
   const newBlog = await generateBlog();
-  newBlog && addBlog(newBlog)
-    .then((_) => console.log(`Success to store with ID ****.`))
-    .catch((error) => console.error('Faild to store the blog:', error))
+  await addBlog(newBlog);
+  console.log(`Success to store with ID ****.`);
 }
 
-main();
+if (require.main === module) {
+  main().catch((error) => {
+    console.error('Faild to run main:', error);
+    throw error;
+  });
+}

@@ -18,7 +18,7 @@ const fetchOpenAi = async () => {
     return completion;
   } catch (e) {
     console.error(e, "Faild to fetch Open API");
-    return undefined;
+    throw e;
   }
 }
 
@@ -57,15 +57,18 @@ const getGeneratedPart = async (): Promise<generatedPart|undefined> => {
   return parsedNewBlog;
 }
 
-export const generateBlog = async (): Promise<blogData|undefined> => {
+export const generateBlog = async (): Promise<blogData> => {
   const parsedNewBlog = await repetition(3, getGeneratedPart);
   const TIME_DIFFERENCE = 9;
 
   const now = new Date();
-  return parsedNewBlog ? {
+  if (!parsedNewBlog) {
+    throw new Error("Faild to generate blog.");
+  }
+  return {
     ...parsedNewBlog,
     createdAt: now,
     publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19 - TIME_DIFFERENCE, 0, 0, 0),
     publiclyAvailable: true,
-  } : undefined;
+  };
 }
