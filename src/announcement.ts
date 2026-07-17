@@ -31,7 +31,7 @@ const getBlogOfTheDay = async () => {
     return blog && isWithinLast24Hours(blog.publishedAt) ? blog : undefined;
   } catch (e) {
     console.error("Faild to get all blogs.", e);
-    return undefined;
+    throw e;
   }
 };
 
@@ -61,12 +61,20 @@ const createTweetText = ({ title, body, id }: { title: string; body: string; id:
 
 const announcement = async () => {
   const sourceBlog = await getBlogOfTheDay();
-  const tweetText = sourceBlog && createTweetText({
-        title: sourceBlog.title,
-        body: sourceBlog.body,
-        id: sourceBlog.id,
+  if (!sourceBlog) {
+    throw new Error("Blog of the day is not found.");
+  }
+  const tweetText = createTweetText({
+    title: sourceBlog.title,
+    body: sourceBlog.body,
+    id: sourceBlog.id,
   });
-  tweetText && postToTwitter(tweetText);
+  await postToTwitter(tweetText);
 };
 
-announcement();
+if (require.main === module) {
+  announcement().catch((error) => {
+    console.error('Faild to run announcement:', error);
+    throw error;
+  });
+}
